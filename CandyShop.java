@@ -4,11 +4,31 @@ import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.Scanner;
 
+import javax.management.AttributeChangeNotification;
+
 public class CandyShop {
 	/*
 	 * Debajo de esta seccion definire las funciones necesarias para el desarrollo
 	 * del proyecto
 	 */
+	
+	static int[] ordenarBurbuja(int array[]) {
+		int aux;
+		boolean salir=true;
+		while(salir) {
+			salir = false;
+			for (int i=1; i < array.length; i++) {
+				if (array[i] < (array[i-1]) ) {
+					aux = array[i-1];
+					array[i-1] = array[i];
+					array[i] = aux;
+					salir = true;
+				}
+			}
+		}
+		return array;
+	}
+	
 	static int[] elementoArray(String codigo) {
 		// El objetivo de esta funcion es convertir la posicion que se introduzca en la
 		// posicion correspondiente dentro de la matriz.
@@ -171,6 +191,81 @@ public class CandyShop {
 		}
 	}
 
+	static void cambiarPrecio(double precio[][], String producto[][]) {
+		System.out.println("Indique el codigo del producto que quiera modificar su precio: ");
+		Scanner s = new Scanner(System.in);
+		String codigo=s.next();
+		int posiciones[] = elementoArray(codigo);
+		if (posiciones[2]==0) {
+			System.out.println("El producto es: "+ producto[posiciones[0]][posiciones[1]] + " con un costo de: " + precio[posiciones[0]][posiciones[1]] +"€");
+			System.out.println("Indique el nuevo precio");
+			try {
+			double precioNuevo= s.nextDouble();
+			if(precioNuevo>0) {
+			for (int filas =0; filas< 4; filas++) {
+				for(int columnas=0; columnas<4; columnas++) {
+					if (producto[posiciones[0]][posiciones[1]].equals(producto[filas][columnas])) {
+						precio[filas][columnas]= precioNuevo;
+					}
+				}
+			}
+			System.out.println("Operacion realizada, Ahora " +producto[posiciones[0]][posiciones[1]] + " Cuesta " + precio[posiciones[0]][posiciones[1]] +"€" );
+			}
+			else {
+				System.out.println("El precio no puede ser negativo");
+			}
+			} catch (Exception c) {
+				System.err.println("Introduzca valores numericos");
+			}
+		}
+	}
+
+	static void cambiarProductos(String producto[][], double precio[][], int cantidad[][], int ventas[][]) {
+		System.out.println("Indique el producto que desea modificar: ");
+		Scanner s = new Scanner(System.in);
+		String codigo = s.next();
+		int posiciones[] = elementoArray(codigo);
+		if (posiciones[2]==0) {
+			System.out.println("Usted va a modificar " + producto[posiciones[0]][posiciones[1]] + " que se encuentra en la posicion: " + codigo);
+			System.out.println("Introduzca el nombre del nuevo producto: ");
+			String nuevoProducto=s.next();
+			System.out.println("Introduzca la cantidad de elementos que contendra el cajetin: ");
+			try {
+			int cantidadNueva =s.nextInt();
+			if (cantidadNueva>0 &&  cantidadNueva<=5) {
+			System.out.println("Introduzca la precio del producto: ");
+			double nuevoPrecio=s.nextDouble();
+			if(nuevoPrecio>0) {
+				producto[posiciones[0]][posiciones[1]] = nuevoProducto;
+				cantidad[posiciones[0]][posiciones[1]] = cantidadNueva;
+				ventas[posiciones[0]][posiciones[1]] = 0;
+				for (int filas =0; filas< 4; filas++) {
+					for(int columnas=0; columnas<4; columnas++) {
+						if (producto[posiciones[0]][posiciones[1]].equals(producto[filas][columnas])) {
+							precio[filas][columnas]= nuevoPrecio;
+						}
+					}
+				}
+				System.out.println("Operacion realizada, Ahora " +producto[posiciones[0]][posiciones[1]] + " Cuesta " + precio[posiciones[0]][posiciones[1]] +"€" + " y posee " + cantidad[posiciones[0]][posiciones[1]] + " Unidades" );
+				}
+				}
+			}
+			 catch (InputMismatchException a) {
+					System.err.println("Introduzca un valor valido");
+					s.next();
+			}
+		}
+	}
+	//CONTINUAR POR ACA.
+	static void masVendidos(int Ventas[][]) {
+		int ventasOrdenadas[][] = Ventas;
+		for (int filas=0; filas<4; filas++) {
+			for (int columnas=0; columnas<4; columnas++) {
+				
+			}
+		}
+	} 
+	
 	static void menuAdmin(String producto[][], double precio[][], int venta[][], int cantidad[][], String contraseña[], boolean salir) {
 		/*
 		 * 
@@ -201,10 +296,10 @@ public class CandyShop {
 					rellenarProductos(cantidad);
 					break;
 				case 3:
-
+					cambiarPrecio(precio, producto);
 					break;
 				case 4:
-
+					cambiarProductos(producto, precio, cantidad, venta);
 					break;
 				case 5:
 
