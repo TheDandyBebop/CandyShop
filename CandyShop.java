@@ -19,6 +19,7 @@ public class CandyShop {
 				}
 			}
 		}
+	
 	static int[] ordenarBurbuja(int array[]) {
 		int aux;
 		boolean salir=true;
@@ -251,15 +252,45 @@ public class CandyShop {
 		}
 	}
 	//CONTINUAR POR ACA.
-	static void masVendidos(int Ventas[][]) {
-		int ventasOrdenadas[][] = Ventas;
-		for (int filas=0; filas<4; filas++) {
-			for (int columnas=0; columnas<4; columnas++) {
-				
+	static void masVendidos(int ventas[][], String producto[][]) {
+	int contador =0;
+	String repetido="";
+	
+	int arrayOrdenado[]=new int[16];
+	for (int filas = 0; filas < 4; filas++) {
+		for (int columnas = 0; columnas < 4; columnas++) {
+			arrayOrdenado[contador]=ventas[filas][columnas];
+			contador++;
 			}
 		}
-	} 
-			
+	ordenarBurbuja(arrayOrdenado);
+	contador=0;
+	int finalArray=(arrayOrdenado.length-1);
+	int ventasRepetidas=arrayOrdenado[finalArray];
+	while(arrayOrdenado[finalArray]!=0 && contador<3) {
+	for (int filas = 0; filas < 4; filas++) {
+		for (int columnas = 0; columnas < 4; columnas++) {
+		
+		if(arrayOrdenado[finalArray] == ventas[filas][columnas] && contador <3) {
+			if(!repetido.equals(producto[filas][columnas])&&arrayOrdenado[finalArray]!=0) {
+			System.out.println("Producto: " + producto[filas][columnas] + "Ventas: "+ ventas[filas][columnas]);
+			repetido=producto[filas][columnas];
+			}
+			ventasRepetidas=arrayOrdenado[finalArray];
+			finalArray--;
+			}
+		if(ventasRepetidas != arrayOrdenado[finalArray]) {
+			contador++;
+			ventasRepetidas=arrayOrdenado[finalArray];
+			}
+		if (contador==3) {
+			break;
+		}
+
+		}
+	}
+			}
+	}
 	public static void main(String args[]) {
 		Scanner s = new Scanner(System.in);
 		// Ahora definire los booleanos para los menus
@@ -372,7 +403,7 @@ public class CandyShop {
 									cambiarProductos(producto, precio, cantidad, venta,posicion,nuevoProducto,cantidadNueva,nuevoPrecio);
 									break;
 								case 5:
-
+									masVendidos(venta,producto);
 									break;
 								case 6:
 
