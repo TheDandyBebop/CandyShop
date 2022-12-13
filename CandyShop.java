@@ -50,8 +50,7 @@ public class CandyShop {
 				}
 			}
 		}
-	
-	
+
 	static String comprobarPassword(String contraseña,String nuevaContraseña,String repetirContraseña){
 		if (repetirContraseña.equals(nuevaContraseña)) { //Compruebo si introdujo 2 veces la misma contraseña
 			System.out.println("¡Contraseña cambiada con exito!");
@@ -293,7 +292,7 @@ public class CandyShop {
 			}
 		}
 	}
-	//CONTINUAR POR ACA.
+
 	static void masVendidos(int ventas[][], String producto[][]) {
 		int contador =0;
 		String repetido[]= {"","","","","","","","","","","","","","","",""};//Ver como solucionarlo
@@ -389,6 +388,44 @@ public class CandyShop {
 	
 	}
 
+	static void menosVendidos(int ventas[][], String producto[][]) {
+		String repetido[]= {"","","","","","","","","","","","","","","",""};//Ver como solucionarlo
+		int arrayOrdenado[]=new int[16];
+		int contador =0;
+		for (int filas = 0; filas < 4; filas++) {
+			for (int columnas = 0; columnas < 4; columnas++) {
+				arrayOrdenado[contador]=ventas[filas][columnas];
+				contador++;}
+			}
+		ordenarBurbuja(arrayOrdenado);
+		contador=0;
+		boolean estaRepetido=false;
+		int ventasRepetidas=arrayOrdenado[contador];
+		for(int filas=0;filas<4;filas++) {
+			for(int columnas=0;columnas<4;columnas++) {
+				if (ventasRepetidas > arrayOrdenado[contador]) {
+					break;
+				}
+				if(ventas[filas][columnas]==arrayOrdenado[contador]) {
+					for(int recorrerProductos=0; recorrerProductos<repetido.length;recorrerProductos++) {//RECORRO LA LISTA DE PRODUCTOS YA MOSTRADOS
+						if(producto[filas][columnas].equals(repetido[recorrerProductos])){//SI YA FUE MOSTRADO 
+							estaRepetido=true;//DEVUELVE TRUE, ESTA REPETIDO
+							break;
+						}
+					}
+					if(!estaRepetido) {
+						System.out.println("Producto: " + producto[filas][columnas] + " Ventas " +  ventas[filas][columnas]);
+						repetido[contador]=producto[filas][columnas];
+						ventasRepetidas=arrayOrdenado[contador];
+						contador++;
+					}
+					estaRepetido=false;
+				}
+				
+			}
+		}
+	}
+	
 	public static void main(String args[]) {
 		Scanner s = new Scanner(System.in);
 		// Ahora definire los booleanos para los menus
@@ -479,7 +516,7 @@ public class CandyShop {
 									masVendidos(matrizVenta,matrizProducto);
 									break;
 								case 6:
-
+									menosVendidos(matrizVenta, matrizProducto);
 									break;
 								case 7:
 
