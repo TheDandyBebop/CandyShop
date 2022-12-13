@@ -3,10 +3,41 @@ package candyShop;
 import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.Scanner;
-
 import javax.management.AttributeChangeNotification;
-
 public class CandyShop {
+	
+		//Definire las variables y matrices fuera del main
+		// Definicion de matrices
+		// Productos disponibles		
+		static String[][] matrizProducto = { 
+						{ "Lacasitos", "Chicles de fresa", "KitKat", "Palotes" },
+						{ "Oreo", "Bolsa Haribo", "Chetoos", "Twix" },
+						{ " M&M'S ", " Kinder Bueno ", "Papa Delta", "Chicles de menta" },
+						{ "Lacasitos", "Crunch", "Milkybar", "KitKat" } };
+		// Precio de los productos. El Precio correspode con el producto de la matriz producto en la misma posicion.
+		static double[][] matrizPrecio = { 
+						{ 1.5, 0.8, 1.1, 0.9 }, 
+						{ 1.8, 1, 1.2, 1 }, 
+						{ 1.8, 1.3, 1.2, 0.8},
+						{ 1.5, 1.1, 1.1, 1.1} };
+		// Matriz de Cantidades, Cada posicion correspondera con la cantidad de los productos(Matriz productos) en la misma posicion
+		static int[][] matrizCantidad = new int[4][4];	
+		// Matriz de ventas, Cada posicion correspondera con la cantidad de ventas de los productos(Matriz productos) en la misma posicion
+		static int[][] matrizVenta = new int[4][4];
+		static String posicion;// String que corresponde a la posicion introducida en forma de Char
+		static String contraseña =  "DAM" ;// Contraseña del admin.
+		static boolean salirMenuP = false;// Principal
+		static double nuevoPrecio;//var que usare para los precios nuevos
+		
+		/**Matriz de ventas para testear
+		static int[][] matrizVenta = { 
+				{ 3, 0, 2, 0}, 
+				{ 3, 2, 0, 1}, 
+				{ 0, 1, 0, 2},
+				{ 3, 0, 1, 2} };**/
+		
+		
+		
 	/*
 	 * Debajo de esta seccion definire las funciones necesarias para el desarrollo
 	 * del proyecto
@@ -19,6 +50,18 @@ public class CandyShop {
 				}
 			}
 		}
+	
+	
+	static String comprobarPassword(String contraseña,String nuevaContraseña,String repetirContraseña){
+		if (repetirContraseña.equals(nuevaContraseña)) { //Compruebo si introdujo 2 veces la misma contraseña
+			System.out.println("¡Contraseña cambiada con exito!");
+			return nuevaContraseña;
+		} else {
+			System.out.println("Las contraseñas no coinciden, vuelva a intentarlo");
+			return contraseña;
+		}
+	
+	}
 	
 	static int[] ordenarBurbuja(int array[]) {
 		int aux;
@@ -89,15 +132,14 @@ public class CandyShop {
 		return posicionM;
 	}
 
+	/*
+	 * Funcionamiento: Ya con las posiciones adquiridas en la funcion
+	 * "elementoArray" miro si el producto introducido posee existencias y, si es el
+	 * caso, decremento una unidad en cantidad pero aumento 1 en ventas. El resto de
+	 * elementos que introduzco en la funcion son las matrices que tengo que mirar y
+	 * modificar.
+	 */
 	static void pedirGolosinas(int codigo[], int cantidad[][], String producto[][], int venta[][]) {
-		/*
-		 * Funcionamiento: Ya con las posiciones adquiridas en la funcion
-		 * "elementoArray" miro si el producto introducido posee existencias y, si es el
-		 * caso, decremento una unidad en cantidad pero aumento 1 en ventas. El resto de
-		 * elementos que introduzco en la funcion son las matrices que tengo que mirar y
-		 * modificar.
-		 */
-
 		// SI hay existencias
 		if (cantidad[codigo[0]][codigo[1]] > 0) {
 			// te muestro el producto
@@ -253,78 +295,109 @@ public class CandyShop {
 	}
 	//CONTINUAR POR ACA.
 	static void masVendidos(int ventas[][], String producto[][]) {
-	int contador =0;
-	String repetido="";
-	
-	int arrayOrdenado[]=new int[16];
-	for (int filas = 0; filas < 4; filas++) {
-		for (int columnas = 0; columnas < 4; columnas++) {
-			arrayOrdenado[contador]=ventas[filas][columnas];
-			contador++;
+		int contador =0;
+		String repetido[]= {"","","","","","","","","","","","","","","",""};//Ver como solucionarlo
+		int arrayOrdenado[]=new int[16];
+		for (int filas = 0; filas < 4; filas++) {
+			for (int columnas = 0; columnas < 4; columnas++) {
+				arrayOrdenado[contador]=ventas[filas][columnas];
+				contador++;
+				}
+			}
+		boolean estaRepetido=false;
+		ordenarBurbuja(arrayOrdenado);
+		contador=0;
+		int contadorProductos=0;
+		int finalArray=(arrayOrdenado.length-1);
+		int ventasRepetidas=arrayOrdenado[finalArray];
+		if(arrayOrdenado[finalArray]==0) {
+			System.out.println("No hay ventas que mostrar aun \n");
+		}
+		else {
+		for (int filas =0; filas < 4; filas++) {//RECORRO FILAS MATRIZ
+			for (int columnas =0; columnas < 4; columnas++) {//RECORRO COLUMNAS MATRIZ
+				if (ventas[filas][columnas]==arrayOrdenado[finalArray]) {//SI LAS VENTAS COINCIDEN CON LA POSICION EN LA MATRIZ
+					for(int recorrerProductos=0; recorrerProductos<repetido.length;recorrerProductos++) {//RECORRO LA LISTA DE PRODUCTOS YA MOSTRADOS
+						if(producto[filas][columnas].equals(repetido[recorrerProductos])){//SI YA FUE MOSTRADO 
+							estaRepetido=true;//DEVUELVE TRUE, ESTA REPETIDO
+							break;
+						}
+					}
+					if (!estaRepetido && arrayOrdenado[finalArray]!=0 && contador<3) {//SI NO ESTA REPETIDO y el valor no es 0
+						System.out.println("Producto: " + producto[filas][columnas]+ " Ventas " + ventas[filas][columnas]);//MUESTRO EL PRODUCTO Y SUS VENTAS
+						repetido[contadorProductos]=producto[filas][columnas];//Guardo el producto repetido
+						contadorProductos++;//incremento el contador de productos mostrados
+						filas=-1;//Reinicio la busqueda
+						columnas=4;
+						ventasRepetidas=arrayOrdenado[finalArray];
+						finalArray--;
+					}
+					if(ventasRepetidas!=arrayOrdenado[finalArray]) {
+						contador++;
+					}
+					estaRepetido=false;//vuelvo a dejarlo en false
+				}
+				if(filas==3 && columnas==3) {
+					finalArray--;
+					filas=-1;//Reinicio la busqueda
+					columnas=4;
+					contador++;//Aumento el contador ya que se recorrio todo el array y no hay otro valor que coincia y no este repetido
+				}	
+			}
+			if(contador>3) {//al mostrar ya los 3 primeros productos muestro un msj y rompo el bucle
+				System.out.println("Fin del ranking");
+				break;
 			}
 		}
-	ordenarBurbuja(arrayOrdenado);
-	contador=0;
-	int finalArray=(arrayOrdenado.length-1);
-	int ventasRepetidas=arrayOrdenado[finalArray];
-	while(arrayOrdenado[finalArray]!=0 && contador<3) {
-	for (int filas = 0; filas < 4; filas++) {
-		for (int columnas = 0; columnas < 4; columnas++) {
+	}
 		
-		if(arrayOrdenado[finalArray] == ventas[filas][columnas] && contador <3) {
-			if(!repetido.equals(producto[filas][columnas])&&arrayOrdenado[finalArray]!=0) {
-			System.out.println("Producto: " + producto[filas][columnas] + "Ventas: "+ ventas[filas][columnas]);
-			repetido=producto[filas][columnas];
+		
+		
+		/*
+		while(arrayOrdenado[finalArray]!=0 && contador<3) {
+		for (int filas = 0; filas < 4; filas++) {
+			for (int columnas = 0; columnas < 4; columnas++) {
+			if(arrayOrdenado[finalArray] == ventas[filas][columnas] && contador <3) {
+					for(int inicio=0; inicio<repetido.length;inicio++) {
+						if(repetido[inicio].equals(producto[filas][columnas])) {
+							estaRepetido=true;
+						}
+					}
+					if(!estaRepetido&&arrayOrdenado[finalArray]!=0) {
+						System.out.println("Producto: " + producto[filas][columnas] + " Ventas: "+ ventas[filas][columnas]);
+						repetido[contadorProductos]=producto[filas][columnas];
+						contadorProductos++;
+						filas=0;
+						columnas=0;
+						ventasRepetidas=arrayOrdenado[finalArray];
+						if (finalArray>0){
+						finalArray--;}
+						}
+					estaRepetido=false;
+					}
+				}
+			if(ventasRepetidas != arrayOrdenado[finalArray]) {
+				contador++;
+				ventasRepetidas=arrayOrdenado[finalArray];
+				}
+			if (contador==3) {
+				break;
 			}
-			ventasRepetidas=arrayOrdenado[finalArray];
-			finalArray--;
-			}
-		if(ventasRepetidas != arrayOrdenado[finalArray]) {
-			contador++;
-			ventasRepetidas=arrayOrdenado[finalArray];
-			}
-		if (contador==3) {
-			break;
-		}
 
-		}
-	}
 			}
+		}*/
+	
 	}
+
 	public static void main(String args[]) {
 		Scanner s = new Scanner(System.in);
 		// Ahora definire los booleanos para los menus
-		boolean salirMenuP = false;// Principal
-		// Definicion de matrices
-		// Productos disponibles
-		
-		String[][] producto = { 
-				{ "Lacasitos", "Chicles de fresa", "KitKat", "Palotes" },
-				{ "Oreo", "Bolsa Haribo", "Chetoos", "Twix" },
-				{ " M&M'S ", " Kinder Bueno ", "Papa Delta", "Chicles de menta" },
-				{ "Lacasitos", "Crunch", "Milkybar", "KitKat" } };
-		// Precio de los productos. El Precio correspode con el producto de la matriz producto en la misma posicion.
-	
-		double[][] precio = { 
-				{ 1.5, 0.8, 1.1, 0.9 }, 
-				{ 1.8, 1, 1.2, 1 }, 
-				{ 1.8, 1.3, 1.2, 0.8},
-				{ 1.5, 1.1, 1.1, 1.1} };
-		
-		// Matriz de Cantidades, Cada posicion correspondera con la cantidad de los productos(Matriz productos) en la misma posicion
-		int[][] cantidad = new int[4][4];
-		
-		// Matriz de ventas, Cada posicion correspondera con la cantidad de ventas de los productos(Matriz productos) en la misma posicion
-		int[][] venta = new int[4][4];
-		
-		String posicion;// String que corresponde a la posicion introducida en forma de Char
-		String contraseña =  "DAM" ;// Contraseña del admin.
 		
 		//Asigno mediante una funcion valores a ambas matrices
-		inicializarMatriz(venta, 0);
-		inicializarMatriz(cantidad, 3);
+		inicializarMatriz(matrizVenta, 0);
+		inicializarMatriz(matrizCantidad, 3);
 		
-		double nuevoPrecio;//var que usare para los precios nuevos
+	
 		while (!salirMenuP) {
 			boolean salirMenuA = false;//Condicion para el manu del Admin
 			System.out.println("Bienvenido Al CandyShop de Eric Sanzeri, Seleccione la accion a realizar: ");
@@ -338,14 +411,15 @@ public class CandyShop {
 					System.out.println("Introduzca la posicion del producto: ");
 					posicion = s.next();
 					// Array que guarda las posiciones del array
-					int[] posMat = elementoArray(posicion);
+					int[] posMatriz = elementoArray(posicion);
 					// Compruebo fuera de la duncion que el codigo fue correcto.
-					if (posMat[2] == 0) {
-						pedirGolosinas(posMat, cantidad, producto, venta);
+					if (posMatriz[2] == 0) {
+						pedirGolosinas(posMatriz, matrizCantidad, matrizProducto, matrizVenta);
 					}
 					break;
+					
 				case 2:
-					mostrarProductos(producto, precio);
+					mostrarProductos(matrizProducto, matrizPrecio);
 					break;
 				case 3:
 					//MENU ADMINISTRADOR
@@ -370,27 +444,26 @@ public class CandyShop {
 									System.out.println("Introduzca la nueva contraseña: ");
 									String nuevaContraseña = s.next();
 									System.out.println("Vuelva a repetir la contraseña: ");
-									if (s.next().equals(nuevaContraseña)) { //Compruebo si introdujo 2 veces la misma contraseña
-										contraseña = nuevaContraseña;
-										System.out.println("¡Contraseña cambiada con exito!");
-									} else {
-										System.out.println("Las contraseñas no coinciden, vuelva a intentarlo");
-									}
+									String contraseñaaRepe = s.next();
+									contraseña = comprobarPassword(contraseña,nuevaContraseña, contraseñaaRepe);
+									
 									break;
 								case 2:
 									System.out.println("Indique el codigo del producto que quiera rellenar");
 									posicion=s.next();
 									System.out.println("Indique la cantidad de producto que quiera agregar");
 									int agregar=s.nextInt();
-									rellenarProductos(cantidad, agregar,posicion);
+									rellenarProductos(matrizCantidad, agregar,posicion);
 									break;
+									
 								case 3:
 									System.out.println("Indique el codigo del producto que quiera modificar su coste");
 									posicion=s.next();
 									System.out.println("Indique el nuevo precio del producto");
 									nuevoPrecio=s.nextDouble();
-									cambiarPrecio(precio, producto,posicion,nuevoPrecio);
+									cambiarPrecio(matrizPrecio, matrizProducto,posicion,nuevoPrecio);
 									break;
+									
 								case 4:
 									System.out.println("Indique el producto que desea modificar: ");
 									posicion = s.next();
@@ -398,12 +471,12 @@ public class CandyShop {
 									String nuevoProducto=s.next();
 									System.out.println("Introduzca la cantidad de elementos que contendra el cajetin: ");
 									int cantidadNueva =s.nextInt();
-									System.out.println("Introduzca la precio del producto: ");
+									System.out.println("Introduzca el precio del producto: ");
 									nuevoPrecio=s.nextDouble();
-									cambiarProductos(producto, precio, cantidad, venta,posicion,nuevoProducto,cantidadNueva,nuevoPrecio);
+									cambiarProductos(matrizProducto, matrizPrecio, matrizCantidad, matrizVenta,posicion,nuevoProducto,cantidadNueva,nuevoPrecio);
 									break;
 								case 5:
-									masVendidos(venta,producto);
+									masVendidos(matrizVenta,matrizProducto);
 									break;
 								case 6:
 
