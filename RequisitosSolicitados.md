@@ -1,5 +1,3 @@
-# CandyShop
-Proyecto CandyShop para el Ies Itaca. el objetivo es cumplir con una serie de requisitos que introduciré en el readme
 Requisitos: 
 1
 PROYECTO 1 – CANDY SHOP
